@@ -1,4 +1,4 @@
-package me.hiennguyen.circleseekbar;
+package hiennguyen.me.circleseekbardemo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("me.hiennguyen.circleseekbar", appContext.getPackageName());
+        assertEquals("hiennguyen.me.circleseekbardemo", appContext.getPackageName());
     }
 }

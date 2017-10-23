@@ -1,4 +1,4 @@
-package me.hiennguyen.circleseekbar;
+package hiennguyen.me.circleseekbardemo;
 
 import org.junit.Test;
 

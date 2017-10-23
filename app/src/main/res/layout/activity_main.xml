@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="me.hiennguyen.circleseekbar.MainActivity">
+    tools:context="hiennguyen.me.circleseekbardemo.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
