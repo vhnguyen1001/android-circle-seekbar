@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircleSeekBar">
+        <attr name="csb_points" format="integer"/>
+        <attr name="csb_min" format="integer"/>
+        <attr name="csb_max" format="integer"/>
+        <attr name="csb_step" format="integer"/>
+
+        <attr name="csb_indicatorIcon" format="reference"/>
+
+        <attr name="csb_progressColor" format="color"/>
+        <attr name="csb_progressWidth" format="dimension"/>
+
+        <attr name="csb_arcColor" format="color"/>
+        <attr name="csb_arcWidth" format="dimension"/>
+
+        <attr name="csb_textSize" format="dimension"/>
+        <attr name="csb_textColor" format="color"/>
+        <attr name="csb_thumbSize" format="dimension" />
+
+    </declare-styleable>
+
+</resources>

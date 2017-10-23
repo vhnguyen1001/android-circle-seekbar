@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Circle Seekbar</string>
+    <string name="title">Circle Seekbar</string>
+    <string name="demo_description"> An Android Circle Seekbar Demo - My First library</string>
 </resources>

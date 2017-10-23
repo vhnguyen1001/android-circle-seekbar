@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
 
+ext {
+    PUBLISH_GROUP_ID = 'me.hiennguyen.circleseekbar'
+    PUBLISH_ARTIFACT_ID = 'circleseekbar'
+    PUBLISH_VERSION = '1.0.0'
+}
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
@@ -32,3 +38,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+// or use the remote copy to keep update with latest changes
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
