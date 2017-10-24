@@ -36,10 +36,7 @@ dependencies {
         app:csb_textColor="@color/color_text"
         app:csb_textSize="36sp"
         app:csb_thumbSize="36dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        />
 ```
 **Remember** to add `layout_padding` to make sure that there is enough space to display the whole widget and indicator drawable.
 
