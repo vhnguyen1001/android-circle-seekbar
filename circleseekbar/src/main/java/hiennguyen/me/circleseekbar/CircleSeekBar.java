@@ -10,7 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -22,11 +21,12 @@ public class CircleSeekBar extends View {
 
     private static final int ANGLE_OFFSET = -90;
     private static final float INVALID_VALUE = -1;
+    private static final int TEXT_SIZE_DEFAULT = 72;
 
     /**
      * Current point value.
      */
-    private int mPoint = MIN;
+    private int mProgressDisplay = MIN;
     /**
      * The min value of progress value.
      */
@@ -41,11 +41,6 @@ public class CircleSeekBar extends View {
      * The increment/decrement value for each movement of progress.
      */
     private int mStep = 1;
-
-    /**
-     * The drawable for circle indicator of Seekbar
-     */
-    Drawable mIndicatorIcon;
 
     private int mArcWidth = 8;
     private int mProgressWidth = 12;
@@ -80,23 +75,29 @@ public class CircleSeekBar extends View {
 
     //For Text progress
     private Paint mTextPaint;
-    private int mTextSize = 72;
+    private int mTextSize = TEXT_SIZE_DEFAULT;
     private Rect mTextRect = new Rect();
+    private boolean mIsShowText = true;
 
     private int mCenterX;
     private int mCenterY;
     private int mCircleRadius;
 
+    /**
+     * The drawable for circle indicator of Seekbar
+     */
+    Drawable mThumbDrawable;
+
     // Coordinator (X, Y) of Indicator icon
-    private int mIndicatorIconX;
-    private int mIndicatorIconY;
+    private int mThumbX;
+    private int mThumbY;
     private int mThumbSize;
 
     private int mPadding;
     private double mAngle;
     private boolean mIsThumbSelected = false;
 
-    private OnSeekBarChangedListener mOnSwagPointsChangeListener;
+    private OnSeekBarChangedListener mOnSeekBarChangeListener;
 
 
     public CircleSeekBar(Context context) {
@@ -110,6 +111,64 @@ public class CircleSeekBar extends View {
         init(context, attrs);
     }
 
+    public void setPoint(int mPoint) {
+        this.mProgressDisplay = mPoint;
+        mProgressSweep = (float) mPoint / valuePerDegree();
+        mAngle = Math.PI / 2 - (mProgressSweep * Math.PI) / 180;
+    }
+
+    public void setPointAndInvalidate(int point) {
+        setPoint(point);
+        invalidate();
+    }
+    public void setStep(int mStep) {
+        this.mStep = mStep;
+    }
+
+    public void setThumbDrawable(Drawable mIndicatorIcon) {
+        this.mThumbDrawable = mIndicatorIcon;
+    }
+
+    public void setArcWidth(int mArcWidth) {
+        this.mArcWidth = mArcWidth;
+    }
+
+    public void setProgressWidth(int mProgressWidth) {
+        this.mProgressWidth = mProgressWidth;
+    }
+
+    public void setTextSize(int mTextSize) {
+        this.mTextSize = mTextSize;
+    }
+
+    public void setIsShowText(boolean mIsShowText) {
+        this.mIsShowText = mIsShowText;
+    }
+
+    public int getProgressDisplay() {
+        return mProgressDisplay;
+    }
+
+    public int getMin() {
+        return mMin;
+    }
+
+    public int getMax() {
+        return mMax;
+    }
+
+    public int getStep() {
+        return mStep;
+    }
+
+    public float getCurrentProgress() {
+        return mCurrentProgress;
+    }
+
+    public double getAngle() {
+        return mAngle;
+    }
+
     private void init(Context context, AttributeSet attrs) {
 
         final float density = context.getResources().getDisplayMetrics().density;
@@ -120,17 +179,15 @@ public class CircleSeekBar extends View {
         mArcWidth = (int) (density * mArcWidth);
         mTextSize = (int) (density * mTextSize);
 
-        mIndicatorIcon = ContextCompat.getDrawable(context, R.drawable.ic_circle_seekbar);
+        mThumbDrawable = ContextCompat.getDrawable(context, R.drawable.ic_circle_seekbar);
         if (attrs != null) {
             final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleSeekBar, 0, 0);
-            Drawable indicator = typedArray.getDrawable(R.styleable.CircleSeekBar_csb_indicatorIcon);
-            if (indicator != null) mIndicatorIcon = indicator;
+            Drawable indicator = typedArray.getDrawable(R.styleable.CircleSeekBar_csb_thumbDrawable);
+            if (indicator != null) mThumbDrawable = indicator;
 
-            int indicatorIconHalfWidth = mIndicatorIcon.getIntrinsicWidth() / 2;
-            int indicatorIconHalfHeight = mIndicatorIcon.getIntrinsicHeight() / 2;
-            mIndicatorIcon.setBounds(-indicatorIconHalfWidth, -indicatorIconHalfHeight, indicatorIconHalfWidth, indicatorIconHalfHeight);
+            mProgressDisplay = typedArray.getInteger(R.styleable.CircleSeekBar_csb_progress, mProgressDisplay);
+            mThumbSize = typedArray.getDimensionPixelSize(R.styleable.CircleSeekBar_csb_thumbSize, 50);
 
-            mPoint = typedArray.getInteger(R.styleable.CircleSeekBar_csb_points, mPoint);
             mMin = typedArray.getInteger(R.styleable.CircleSeekBar_csb_min, mMin);
             mMax = typedArray.getInteger(R.styleable.CircleSeekBar_csb_max, mMax);
             mStep = typedArray.getInteger(R.styleable.CircleSeekBar_csb_step, mStep);
@@ -138,13 +195,13 @@ public class CircleSeekBar extends View {
 
             mTextSize = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_textSize, mTextSize);
             textColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_textColor, textColor);
+            mIsShowText = typedArray.getBoolean(R.styleable.CircleSeekBar_csb_isShowText, mIsShowText);
 
             mProgressWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_progressWidth, mProgressWidth);
             progressColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_progressColor, progressColor);
 
             mArcWidth = (int) typedArray.getDimension(R.styleable.CircleSeekBar_csb_arcWidth, mArcWidth);
             arcColor = typedArray.getColor(R.styleable.CircleSeekBar_csb_arcColor, arcColor);
-            mThumbSize = typedArray.getDimensionPixelSize(R.styleable.CircleSeekBar_csb_thumbSize, 50);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 int all = getPaddingLeft() + getPaddingRight() + getPaddingBottom() + getPaddingTop() + getPaddingEnd() + getPaddingStart();
@@ -152,16 +209,16 @@ public class CircleSeekBar extends View {
             } else {
                 mPadding = (getPaddingLeft() + getPaddingRight() + getPaddingBottom() + getPaddingTop()) / 4;
             }
-
             typedArray.recycle();
         }
 
         // range check
-        mPoint = (mPoint > mMax) ? mMax : mPoint;
-        mPoint = (mPoint < mMin) ? mMin : mPoint;
+        mProgressDisplay = (mProgressDisplay > mMax) ? mMax : mProgressDisplay;
+        mProgressDisplay = (mProgressDisplay < mMin) ? mMin : mProgressDisplay;
 
-        mProgressSweep = (float) mPoint / valuePerDegree();
+        mProgressSweep = (float) mProgressDisplay / valuePerDegree();
         mAngle = Math.PI / 2 - (mProgressSweep * Math.PI) / 180;
+        mCurrentProgress = Math.round(mProgressSweep * valuePerDegree());
 
         mArcPaint = new Paint();
         mArcPaint.setColor(arcColor);
@@ -180,8 +237,6 @@ public class CircleSeekBar extends View {
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStyle(Paint.Style.FILL);
         mTextPaint.setTextSize(mTextSize);
-
-
     }
 
     @Override
@@ -211,25 +266,27 @@ public class CircleSeekBar extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        // draw the text
-        String textPoint = String.valueOf(mPoint);
-        mTextPaint.getTextBounds(textPoint, 0, textPoint.length(), mTextRect);
-        // center the text
-        int xPos = canvas.getWidth() / 2 - mTextRect.width() / 2;
-        int yPos = (int) ((mArcRect.centerY()) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2));
-        canvas.drawText(String.valueOf(mPoint), xPos, yPos, mTextPaint);
+        if(mIsShowText) {
+            // draw the text
+            String textPoint = String.valueOf(mProgressDisplay);
+            mTextPaint.getTextBounds(textPoint, 0, textPoint.length(), mTextRect);
+            // center the text
+            int xPos = canvas.getWidth() / 2 - mTextRect.width() / 2;
+            int yPos = (int) ((mArcRect.centerY()) - ((mTextPaint.descent() + mTextPaint.ascent()) / 2));
+            canvas.drawText(String.valueOf(mProgressDisplay), xPos, yPos, mTextPaint);
+        }
 
         // draw the arc and progress
         canvas.drawCircle(mCenterX, mCenterY, mCircleRadius, mArcPaint);
         canvas.drawArc(mArcRect, ANGLE_OFFSET, mProgressSweep, false, mProgressPaint);
 
         // find thumb position
-        mIndicatorIconX = (int) (mCenterX + mCircleRadius * Math.cos(mAngle));
-        mIndicatorIconY = (int) (mCenterY - mCircleRadius * Math.sin(mAngle));
+        mThumbX = (int) (mCenterX + mCircleRadius * Math.cos(mAngle));
+        mThumbY = (int) (mCenterY - mCircleRadius * Math.sin(mAngle));
 
-        mIndicatorIcon.setBounds(mIndicatorIconX - mThumbSize / 2, mIndicatorIconY - mThumbSize / 2,
-                mIndicatorIconX + mThumbSize / 2, mIndicatorIconY + mThumbSize / 2);
-        mIndicatorIcon.draw(canvas);
+        mThumbDrawable.setBounds(mThumbX - mThumbSize / 2, mThumbY - mThumbSize / 2,
+                mThumbX + mThumbSize / 2, mThumbY + mThumbSize / 2);
+        mThumbDrawable.draw(canvas);
     }
 
     private float valuePerDegree() {
@@ -264,11 +321,14 @@ public class CircleSeekBar extends View {
                 // start moving the thumb (this is the first touch)
                 int x = (int) event.getX();
                 int y = (int) event.getY();
-                if (x < mIndicatorIconX + mThumbSize && x > mIndicatorIconX - mThumbSize && y < mIndicatorIconY + mThumbSize
-                        && y > mIndicatorIconY - mThumbSize) {
+                if (x < mThumbX + mThumbSize && x > mThumbX - mThumbSize && y < mThumbY + mThumbSize
+                        && y > mThumbY - mThumbSize) {
                     getParent().requestDisallowInterceptTouchEvent(true);
                     mIsThumbSelected = true;
                     updateProgressState(x, y);
+                    if(mOnSeekBarChangeListener != null) {
+                        mOnSeekBarChangeListener.onStartTrackingTouch(this);
+                    }
                 }
                 break;
             }
@@ -287,6 +347,8 @@ public class CircleSeekBar extends View {
                 // finished moving (this is the last touch)
                 getParent().requestDisallowInterceptTouchEvent(false);
                 mIsThumbSelected = false;
+                if(mOnSeekBarChangeListener != null)
+                    mOnSeekBarChangeListener.onStopTrackingTouch(this);
                 break;
             }
         }
@@ -320,7 +382,7 @@ public class CircleSeekBar extends View {
             mCurrentProgress = progress;
         }
 
-        mPoint = progress - (progress % mStep);
+        mProgressDisplay = progress - (progress % mStep);
 
         /**
          * Determine whether reach max or min to lock point update event.
@@ -335,10 +397,10 @@ public class CircleSeekBar extends View {
                     mPreviousProgress > mCurrentProgress) {
                 isMax = true;
                 progress = mMax;
-                mPoint = mMax;
+                mProgressDisplay = mMax;
                 mProgressSweep = 360;
-                if (mOnSwagPointsChangeListener != null) {
-                    mOnSwagPointsChangeListener.onPointsChanged(this, progress, fromUser);
+                if (mOnSeekBarChangeListener != null) {
+                    mOnSeekBarChangeListener.onPointsChanged(this, progress, fromUser);
                 }
                 invalidate();
             } else if ((mCurrentProgress >= maxDetectValue
@@ -346,10 +408,10 @@ public class CircleSeekBar extends View {
                     && mCurrentProgress > mPreviousProgress) || mCurrentProgress <= mMin) {
                 isMin = true;
                 progress = mMin;
-                mPoint = mMin;
+                mProgressDisplay = mMin;
                 mProgressSweep = mMin / valuePerDegree();
-                if (mOnSwagPointsChangeListener != null) {
-                    mOnSwagPointsChangeListener.onPointsChanged(this, progress, fromUser);
+                if (mOnSeekBarChangeListener != null) {
+                    mOnSeekBarChangeListener.onPointsChanged(this, progress, fromUser);
                 }
                 invalidate();
             }
@@ -363,7 +425,7 @@ public class CircleSeekBar extends View {
             if (isMin
                     && (mPreviousProgress < mCurrentProgress)
                     && mPreviousProgress <= minDetectValue && mCurrentProgress <= minDetectValue
-                    && mPoint >= mMin) {
+                    && mProgressDisplay >= mMin) {
                 isMin = false;
             }
         }
@@ -372,13 +434,17 @@ public class CircleSeekBar extends View {
             progress = (progress > mMax) ? mMax : progress;
             progress = (progress < mMin) ? mMin : progress;
 
-            if (mOnSwagPointsChangeListener != null) {
+            if (mOnSeekBarChangeListener != null) {
                 progress = progress - (progress % mStep);
 
-                mOnSwagPointsChangeListener.onPointsChanged(this, progress, fromUser);
+                mOnSeekBarChangeListener.onPointsChanged(this, progress, fromUser);
             }
             invalidate();
         }
+    }
+
+    public void setSeekBarChangeListener(OnSeekBarChangedListener seekBarChangeListener) {
+        this.mOnSeekBarChangeListener = seekBarChangeListener;
     }
 
 
@@ -386,7 +452,7 @@ public class CircleSeekBar extends View {
         /**
          * Notification that the point value has changed.
          *
-         * @param circleSeekBar The SwagPoints view whose value has changed
+         * @param circleSeekBar The CircleSeekBar view whose value has changed
          * @param points        The current point value.
          * @param fromUser      True if the point change was triggered by the user.
          */

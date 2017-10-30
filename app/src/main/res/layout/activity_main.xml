@@ -16,6 +16,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="14"
+        android:thumb="@color/color_arc"/>
+
 
     <hiennguyen.me.circleseekbar.CircleSeekBar
         android:id="@+id/circular"
@@ -24,19 +30,21 @@
         android:padding="64dp"
         app:csb_arcColor="@color/color_arc"
         app:csb_arcWidth="6dp"
-        app:csb_indicatorIcon="@drawable/ic_circle_seekbar"
+        app:csb_thumbDrawable="@drawable/ic_circle_seekbar"
         app:csb_max="1000"
         app:csb_min="10"
-        app:csb_points="300"
+        app:csb_progress="300"
         app:csb_progressColor="#00aad4"
         app:csb_progressWidth="12dp"
         app:csb_step="5"
         app:csb_textColor="@color/color_text"
         app:csb_textSize="36sp"
         app:csb_thumbSize="36dp"
+        app:csb_isShowText="false"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/txt_point"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
@@ -45,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/cagliostro"
         android:gravity="center"
         android:text="@string/demo_description"
@@ -54,5 +62,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
+        android:id="@+id/txt_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        tools:text="212"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circular"
+        android:layout_marginBottom="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
 </android.support.constraint.ConstraintLayout>
