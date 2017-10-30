@@ -10,7 +10,7 @@ settings.
 ```java
 dependencies {
 	...
-	compile 'me.hiennguyen.circleseekbar:circleseekbar:1.0.0'
+	compile 'me.hiennguyen.circleseekbar:circleseekbar:1.0.1'
 }
 ```
 
@@ -36,6 +36,7 @@ dependencies {
         app:csb_textColor="@color/color_text"
         app:csb_textSize="36sp"
         app:csb_thumbSize="36dp"
+        app:csb_isShowText="true"
         />
 ```
 **Remember** to add `layout_padding` to make sure that there is enough space to display the whole widget and indicator drawable.
