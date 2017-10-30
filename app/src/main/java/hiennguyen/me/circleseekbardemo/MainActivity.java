@@ -4,14 +4,17 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import hiennguyen.me.circleseekbar.CircleSeekBar;
 
 
 public class MainActivity extends AppCompatActivity implements CircleSeekBar.OnSeekBarChangedListener {
 
-    TextView point;
+    EditText point;
+    Button change;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,10 +24,20 @@ public class MainActivity extends AppCompatActivity implements CircleSeekBar.OnS
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.title);
         toolbar.setTitleTextColor(Color.WHITE);
-        CircleSeekBar circleSeekBar = findViewById(R.id.circular);
+        final CircleSeekBar circleSeekBar = findViewById(R.id.circular);
         circleSeekBar.setSeekBarChangeListener(this);
         point = findViewById(R.id.txt_point);
-        circleSeekBar.setPoint(13);
+        change = findViewById(R.id.change_button);
+        circleSeekBar.setProgressDisplayAndInvalidate(13);
+
+        change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(point.getText().length() != 0) {
+                    circleSeekBar.setProgressDisplayAndInvalidate(Integer.valueOf(point.getText().toString()));
+                }
+            }
+        });
     }
 
     @Override

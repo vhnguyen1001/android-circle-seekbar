@@ -16,12 +16,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:progress="14"
-        android:thumb="@color/color_arc"/>
-
 
     <hiennguyen.me.circleseekbar.CircleSeekBar
         android:id="@+id/circular"
@@ -40,7 +34,6 @@
         app:csb_textColor="@color/color_text"
         app:csb_textSize="36sp"
         app:csb_thumbSize="36dp"
-        app:csb_isShowText="false"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -63,18 +56,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <TextView
+    <EditText
         android:id="@+id/txt_point"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
         android:textSize="14sp"
         tools:text="212"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circular"
-        android:layout_marginBottom="18sp"
+        android:layout_margin="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <Button
+        android:id="@+id/change_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change"
+        android:layout_margin="16dp"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
 </android.support.constraint.ConstraintLayout>

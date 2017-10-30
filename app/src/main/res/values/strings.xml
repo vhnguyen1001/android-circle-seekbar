@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Circle Seekbar</string>
     <string name="title">Circle Seekbar</string>
-    <string name="demo_description">Demo for Android Circle SeekBar Library \n HienNguyen - A
-        Junior Android Developer</string>
+    <string name="demo_description">Demo for Android Circle SeekBar Library \n HienNguyen - An Android Developer</string>
 </resources>

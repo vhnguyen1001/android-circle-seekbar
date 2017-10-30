@@ -111,16 +111,6 @@ public class CircleSeekBar extends View {
         init(context, attrs);
     }
 
-    public void setPoint(int mPoint) {
-        this.mProgressDisplay = mPoint;
-        mProgressSweep = (float) mPoint / valuePerDegree();
-        mAngle = Math.PI / 2 - (mProgressSweep * Math.PI) / 180;
-    }
-
-    public void setPointAndInvalidate(int point) {
-        setPoint(point);
-        invalidate();
-    }
     public void setStep(int mStep) {
         this.mStep = mStep;
     }
@@ -143,6 +133,22 @@ public class CircleSeekBar extends View {
 
     public void setIsShowText(boolean mIsShowText) {
         this.mIsShowText = mIsShowText;
+    }
+
+    public void setProgressDisplay(int progressDisplay) {
+        mProgressDisplay = progressDisplay;
+        mProgressDisplay = (mProgressDisplay > mMax) ? mMax : mProgressDisplay;
+        mProgressDisplay = (mProgressDisplay < mMin) ? mMin : mProgressDisplay;
+        mProgressSweep = (float) mProgressDisplay / valuePerDegree();
+        mAngle = Math.PI / 2 - (mProgressSweep * Math.PI) / 180;
+    }
+
+    public void setProgressDisplayAndInvalidate(int progressDisplay) {
+        setProgressDisplay(progressDisplay);
+        if(mOnSeekBarChangeListener != null) {
+            mOnSeekBarChangeListener.onPointsChanged(this, mProgressDisplay, false);
+        }
+        invalidate();
     }
 
     public int getProgressDisplay() {
