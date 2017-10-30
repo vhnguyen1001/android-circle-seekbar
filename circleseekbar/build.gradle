@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'me.hiennguyen.circleseekbar'
     PUBLISH_ARTIFACT_ID = 'circleseekbar'
-    PUBLISH_VERSION = '1.0.0'
+    PUBLISH_VERSION = '1.0.1'
 }
 
 android {
