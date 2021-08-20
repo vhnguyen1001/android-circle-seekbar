@@ -3,6 +3,7 @@ package hiennguyen.me.circleseekbar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -73,6 +74,7 @@ public class CircleSeekBar extends View {
     // For Progress
     private Paint mProgressPaint;
     private float mProgressSweep;
+    private int mProgressColor = 0;
 
     //For Text progress
     private Paint mTextPaint;
@@ -118,6 +120,11 @@ public class CircleSeekBar extends View {
 
     public void setThumbDrawable(Drawable mIndicatorIcon) {
         this.mThumbDrawable = mIndicatorIcon;
+    }
+
+    public void setProgressColor(int colorRes) {
+        this.mProgressColor = colorRes;
+        mProgressPaint.setColor(colorRes);
     }
 
     public void setArcWidth(int mArcWidth) {
@@ -180,7 +187,7 @@ public class CircleSeekBar extends View {
 
         final float density = context.getResources().getDisplayMetrics().density;
         int progressColor = ContextCompat.getColor(context, R.color.color_progress);
-        int arcColor = ContextCompat.getColor(context, R.color.color_arc);
+        int arcColor = ContextCompat.getColor(context, mProgressColor == 0 ? R.color.color_arc : mProgressColor);
         int textColor = ContextCompat.getColor(context, R.color.color_text);
         mProgressWidth = (int) (density * mProgressWidth);
         mArcWidth = (int) (density * mArcWidth);
