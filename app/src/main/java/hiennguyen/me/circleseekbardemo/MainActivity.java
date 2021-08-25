@@ -1,5 +1,6 @@
 package hiennguyen.me.circleseekbardemo;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import hiennguyen.me.circleseekbar.CircleSeekBar;
 
@@ -30,12 +32,13 @@ public class MainActivity extends AppCompatActivity implements CircleSeekBar.OnS
         point = findViewById(R.id.txt_point);
         change = findViewById(R.id.change_button);
         circleSeekBar.setProgressDisplayAndInvalidate(13);
-
+        final Context ctx = this;
         change.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(point.getText().length() != 0) {
                     circleSeekBar.setProgressDisplayAndInvalidate(Integer.valueOf(point.getText().toString()));
+                    circleSeekBar.setProgressColor(ContextCompat.getColor(ctx, R.color.colorOrange));
                 }
             }
         });
